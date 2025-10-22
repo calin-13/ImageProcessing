@@ -205,10 +205,13 @@
 
             </MenuItem>
 
-            <MenuItem Header="Thresholding"
+           <MenuItem Header="Thresholding"
                       Background="{Binding Path=Theme.MenuItemBackgroundColor}"
                       Foreground="{Binding Path=Theme.MenuItemForegroundColor}">
-
+                <MenuItem Header="Intermeans (iterative)"
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=MenuCommands.IntermeansCommand}"
+                          CommandParameter="{Binding ElementName=processedImageCanvas}"/>
             </MenuItem>
 
             <MenuItem Header="Filters" 
