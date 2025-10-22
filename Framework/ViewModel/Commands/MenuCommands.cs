@@ -1,4 +1,4 @@
-﻿using Emgu.CV;
+using Emgu.CV;
 using Emgu.CV.Structure;
 
 using System.Windows;
@@ -17,6 +17,8 @@ using static Framework.Converters.ImageConverter;
 
 using Algorithms.Sections;
 using Algorithms.Tools;
+using Algorithms.Sections;
+
 using Algorithms.Utilities;
 using ZedGraph;
 
@@ -601,6 +603,48 @@ namespace Framework.ViewModel
             }
         }
         #endregion
+        
+        #region Intermeans threshold
+
+        private ICommand _intermeansCommand;
+        public ICommand IntermeansCommand
+        {
+            get
+            {
+                if (_intermeansCommand == null)
+                    _intermeansCommand = new RelayCommand(Intermeans);
+                return _intermeansCommand;
+            }
+        }
+
+        private void Intermeans(object parameter)
+        {
+            if (InitialImage == null)
+            {
+                MessageBox.Show("Please load an image first!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+            
+            if (GrayInitialImage == null && ColorInitialImage != null)
+                GrayInitialImage = Tools.Convert(ColorInitialImage);
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("Grayscale image is not available!");
+                return;
+            }
+            
+            byte t = Thresholding.IntermeansThreshold(GrayInitialImage);
+            GrayProcessedImage = Tools.Binary(GrayInitialImage, t);
+            ProcessedImage = Convert(GrayProcessedImage);
+            
+            MessageBox.Show($"Calculated threshold: {t}", "Intermeans Threshold",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        #endregion
+
 
         #region Mirror image
 
