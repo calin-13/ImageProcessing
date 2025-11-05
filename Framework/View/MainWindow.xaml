@@ -214,12 +214,14 @@
                           CommandParameter="{Binding ElementName=processedImageCanvas}"/>
             </MenuItem>
 
-            <MenuItem Header="Filters" 
+             <MenuItem Header="Filters" 
                       Background="{Binding Path=Theme.MenuItemBackgroundColor}"
                       Foreground="{Binding Path=Theme.MenuItemForegroundColor}">
                 <MenuItem Header="Low-pass"
                           Foreground="#1E1E1E">
-
+                    <MenuItem Header="Gaussian 1D filter"
+                              Command="{Binding Path=MenuCommands.Gaussian1DFilterCommand}"
+                              CommandParameter="{Binding ElementName=processedImageCanvas}"/>
                 </MenuItem>
                 <MenuItem Header="High-pass"
                           Foreground="#1E1E1E">
