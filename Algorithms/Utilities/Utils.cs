@@ -22,5 +22,12 @@ namespace Algorithms.Utilities
             return histogram;
         }
         #endregion
+            
+        #region Clip
+        public static byte Clip(double value)
+        {
+            return (byte)Math.Max(0, Math.Min(255, (int)value));
+        }
+        #endregion
     }
 }
