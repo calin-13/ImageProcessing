@@ -1017,6 +1017,66 @@ namespace Framework.ViewModel
         }
         #endregion
 
+        #region Sobel diagonal edges
+private ICommand _sobelDiagonalCommand;
+public ICommand SobelDiagonalCommand
+{
+    get
+    {
+        if (_sobelDiagonalCommand == null)
+            _sobelDiagonalCommand = new RelayCommand(SobelDiagonal);
+        return _sobelDiagonalCommand;
+    }
+}
+
+private void SobelDiagonal(object parameter)
+{
+    if (InitialImage == null)
+    {
+        MessageBox.Show("Please add an image!");
+        return;
+    }
+
+    ClearProcessedCanvas(parameter);
+
+    List<string> labels = new List<string>()
+    {
+        "Threshold (T):",
+        "Deviation (degrees):"
+    };
+
+    DialogWindow window = new DialogWindow(_mainVM, labels);
+    window.ShowDialog();
+
+    List<double> values = window.GetValues();
+    double threshold = values[0];
+    double deviationDegrees = values[1];
+
+    if (threshold < 0)
+    {
+        MessageBox.Show("Threshold must be positive!");
+        return;
+    }
+
+    if (deviationDegrees < 0 || deviationDegrees > 90)
+    {
+        MessageBox.Show("Deviation must be between 0 and 90 degrees!");
+        return;
+    }
+
+    if (ColorInitialImage != null)
+    {
+        GrayInitialImage = Tools.Convert(ColorInitialImage);
+    }
+
+    if (GrayInitialImage != null)
+    {
+        GrayProcessedImage = Filters.SobelDiagonalEdges(GrayInitialImage, threshold, deviationDegrees);
+        ProcessedImage = Convert(GrayProcessedImage);
+    }
+}
+#endregion
+
         #endregion
 
         #region Morphological operations
