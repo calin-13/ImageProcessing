@@ -152,5 +152,70 @@ namespace Algorithms.Sections
 
             return result;
         }
+        
+        public static Image<Gray, byte> SobelDiagonalEdges(Image<Gray, byte> image, double threshold, double deviationDegrees)
+{
+    int width = image.Width;
+    int height = image.Height;
+
+    double[,] Sx = new double[,] { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+    double[,] Sy = new double[,] { { -1, -2, -1 }, { 0, 0, 0 }, { 1, 2, 1 } };
+
+    Image<Gray, byte> result = new Image<Gray, byte>(width, height);
+    byte[,,] imageData = image.Data;
+    byte[,,] resultData = result.Data;
+
+    double targetAngle = 45.0 * Math.PI / 180.0;
+    double deviationRadians = deviationDegrees * Math.PI / 180.0;
+
+    for (int y = 1; y < height - 1; y++)
+    {
+        for (int x = 1; x < width - 1; x++)
+        {
+            double fx = 0;
+            double fy = 0;
+
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    byte pixelValue = imageData[y + i, x + j, 0];
+                    fx += Sx[i + 1, j + 1] * pixelValue;
+                    fy += Sy[i + 1, j + 1] * pixelValue;
+                }
+            }
+
+            double gradientNorm = Math.Sqrt(fx * fx + fy * fy);
+
+            if (gradientNorm > threshold)
+            {
+                double theta = Math.Atan2(fy, fx);
+                
+                if (theta < 0)
+                    theta += Math.PI;
+
+                double angleDiff1 = Math.Abs(theta - targetAngle);
+                double angleDiff2 = Math.Abs(theta - (targetAngle + Math.PI));
+
+                double minAngleDiff = Math.Min(angleDiff1, angleDiff2);
+
+                if (minAngleDiff <= deviationRadians)
+                {
+                    resultData[y, x, 0] = 255;
+                }
+                else
+                {
+                    resultData[y, x, 0] = 0;
+                }
+            }
+            else
+            {
+                resultData[y, x, 0] = 0;
+            }
+        }
+    }
+
+    return result;
+}
     }
 }
