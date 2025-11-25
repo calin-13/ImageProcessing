@@ -230,7 +230,22 @@
             <MenuItem Header="Morphological operations"
                       Background="{Binding Path=Theme.MenuItemBackgroundColor}"
                       Foreground="{Binding Path=Theme.MenuItemForegroundColor}">
-
+                <MenuItem Header="Dilation" 
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=MenuCommands.DilationCommand}"
+                          CommandParameter="{Binding ElementName=processedImageCanvas}"/>
+                <MenuItem Header="Erosion" 
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=MenuCommands.ErosionCommand}"
+                          CommandParameter="{Binding ElementName=processedImageCanvas}"/>
+                <MenuItem Header="Opening" 
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=MenuCommands.OpeningCommand}"
+                          CommandParameter="{Binding ElementName=processedImageCanvas}"/>
+                <MenuItem Header="Closing" 
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=MenuCommands.ClosingCommand}"
+                          CommandParameter="{Binding ElementName=processedImageCanvas}"/>
             </MenuItem>
 
             <MenuItem Header="Geometric transformations"
