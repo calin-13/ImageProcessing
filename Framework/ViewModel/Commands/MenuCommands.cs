@@ -1080,6 +1080,267 @@ private void SobelDiagonal(object parameter)
         #endregion
 
         #region Morphological operations
+        
+        #region Dilation
+        private ICommand _dilationCommand;
+        public ICommand DilationCommand
+        {
+            get
+            {
+                if (_dilationCommand == null)
+                    _dilationCommand = new RelayCommand(Dilation);
+                return _dilationCommand;
+            }
+        }
+
+        private void Dilation(object parameter)
+        {
+            if (InitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            if (GrayInitialImage == null && ColorInitialImage != null)
+                GrayInitialImage = Tools.Convert(ColorInitialImage);
+
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("Grayscale image is not available!");
+                return;
+            }
+
+            List<string> labels = new List<string>()
+            {
+                "Height (h):",
+                "Width (w):",
+                "Threshold (T):",
+                "White Objects (1) or Black Objects (0):"
+            };
+
+            DialogWindow window = new DialogWindow(_mainVM, labels);
+            window.ShowDialog();
+
+            List<double> values = window.GetValues();
+            int h = (int)values[0];
+            int w = (int)values[1];
+            byte threshold = (byte)values[2];
+            int option = (int)values[3];
+
+            if (h <= 0 || w <= 0 || h % 2 == 0 || w % 2 == 0)
+            {
+                MessageBox.Show("Height and width must be positive odd numbers!");
+                return;
+            }
+
+            if (option != 0 && option != 1)
+            {
+                MessageBox.Show("Option must be 0 or 1!");
+                return;
+            }
+
+            GrayProcessedImage = MorphologicalOperations.Dilation(GrayInitialImage, h, w, threshold, option);
+            ProcessedImage = Convert(GrayProcessedImage);
+        }
+        #endregion
+
+        #region Erosion
+        private ICommand _erosionCommand;
+        public ICommand ErosionCommand
+        {
+            get
+            {
+                if (_erosionCommand == null)
+                    _erosionCommand = new RelayCommand(Erosion);
+                return _erosionCommand;
+            }
+        }
+
+        private void Erosion(object parameter)
+        {
+            if (InitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            if (GrayInitialImage == null && ColorInitialImage != null)
+                GrayInitialImage = Tools.Convert(ColorInitialImage);
+
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("Grayscale image is not available!");
+                return;
+            }
+
+            List<string> labels = new List<string>()
+            {
+                "Height (h):",
+                "Width (w):",
+                "Threshold (T):",
+                "White Objects (1) or Black Objects (0):"
+            };
+
+            DialogWindow window = new DialogWindow(_mainVM, labels);
+            window.ShowDialog();
+
+            List<double> values = window.GetValues();
+            int h = (int)values[0];
+            int w = (int)values[1];
+            byte threshold = (byte)values[2];
+            int option = (int)values[3];
+
+            if (h <= 0 || w <= 0 || h % 2 == 0 || w % 2 == 0)
+            {
+                MessageBox.Show("Height and width must be positive odd numbers!");
+                return;
+            }
+
+            if (option != 0 && option != 1)
+            {
+                MessageBox.Show("Option must be 0 or 1!");
+                return;
+            }
+
+            GrayProcessedImage = MorphologicalOperations.Erosion(GrayInitialImage, h, w, threshold, option);
+            ProcessedImage = Convert(GrayProcessedImage);
+        }
+        #endregion
+
+        #region Opening
+        private ICommand _openingCommand;
+        public ICommand OpeningCommand
+        {
+            get
+            {
+                if (_openingCommand == null)
+                    _openingCommand = new RelayCommand(Opening);
+                return _openingCommand;
+            }
+        }
+
+        private void Opening(object parameter)
+        {
+            if (InitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            if (GrayInitialImage == null && ColorInitialImage != null)
+                GrayInitialImage = Tools.Convert(ColorInitialImage);
+
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("Grayscale image is not available!");
+                return;
+            }
+
+            List<string> labels = new List<string>()
+            {
+                "Height (h):",
+                "Width (w):",
+                "Threshold (T):",
+                "White Objects (1) or Black Objects (0):"
+            };
+
+            DialogWindow window = new DialogWindow(_mainVM, labels);
+            window.ShowDialog();
+
+            List<double> values = window.GetValues();
+            int h = (int)values[0];
+            int w = (int)values[1];
+            byte threshold = (byte)values[2];
+            int option = (int)values[3];
+
+            if (h <= 0 || w <= 0 || h % 2 == 0 || w % 2 == 0)
+            {
+                MessageBox.Show("Height and width must be positive odd numbers!");
+                return;
+            }
+
+            if (option != 0 && option != 1)
+            {
+                MessageBox.Show("Option must be 0 or 1!");
+                return;
+            }
+
+            GrayProcessedImage = MorphologicalOperations.Opening(GrayInitialImage, h, w, threshold, option);
+            ProcessedImage = Convert(GrayProcessedImage);
+        }
+        #endregion
+
+        #region Closing
+        private ICommand _closingCommand;
+        public ICommand ClosingCommand
+        {
+            get
+            {
+                if (_closingCommand == null)
+                    _closingCommand = new RelayCommand(Closing);
+                return _closingCommand;
+            }
+        }
+
+        private void Closing(object parameter)
+        {
+            if (InitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            if (GrayInitialImage == null && ColorInitialImage != null)
+                GrayInitialImage = Tools.Convert(ColorInitialImage);
+
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("Grayscale image is not available!");
+                return;
+            }
+
+            List<string> labels = new List<string>()
+            {
+                "Height (h):",
+                "Width (w):",
+                "Threshold (T):",
+                "White Objects (1) or Black Objects (0):"
+            };
+
+            DialogWindow window = new DialogWindow(_mainVM, labels);
+            window.ShowDialog();
+
+            List<double> values = window.GetValues();
+            int h = (int)values[0];
+            int w = (int)values[1];
+            byte threshold = (byte)values[2];
+            int option = (int)values[3];
+
+            if (h <= 0 || w <= 0 || h % 2 == 0 || w % 2 == 0)
+            {
+                MessageBox.Show("Height and width must be positive odd numbers!");
+                return;
+            }
+
+            if (option != 0 && option != 1)
+            {
+                MessageBox.Show("Option must be 0 or 1!");
+                return;
+            }
+
+            GrayProcessedImage = MorphologicalOperations.Closing(GrayInitialImage, h, w, threshold, option);
+            ProcessedImage = Convert(GrayProcessedImage);
+        }
+        #endregion
+        
         #endregion
 
         #region Geometric transformations
