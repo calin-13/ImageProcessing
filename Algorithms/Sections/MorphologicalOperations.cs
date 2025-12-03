@@ -321,5 +321,125 @@ namespace Algorithms.Sections
             
             return result;
         }
+         public static Image<Gray, byte> DilationGrayscale(Image<Gray, byte> inputImage, int h, int w)
+        {
+            if (inputImage == null)
+                throw new ArgumentNullException(nameof(inputImage));
+            
+            if (h <= 0 || w <= 0)
+                throw new ArgumentException("Dimensiunile măștii trebuie să fie pozitive");
+            
+            if (h % 2 == 0 || w % 2 == 0)
+                throw new ArgumentException("Dimensiunile măștii trebuie să fie impare");
+
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Width, inputImage.Height);
+            int halfH = h / 2;
+            int halfW = w / 2;
+            
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    byte maxValue = 0;
+                    
+                    for (int i = -halfH; i <= halfH; i++)
+                    {
+                        for (int j = -halfW; j <= halfW; j++)
+                        {
+                            int ny = y + i;
+                            int nx = x + j;
+                            
+                            if (ny >= 0 && ny < inputImage.Height && 
+                                nx >= 0 && nx < inputImage.Width)
+                            {
+                                byte pixelValue = inputImage.Data[ny, nx, 0];
+                                if (pixelValue > maxValue)
+                                {
+                                    maxValue = pixelValue;
+                                }
+                            }
+                        }
+                    }
+                    
+                    result.Data[y, x, 0] = maxValue;
+                }
+            }
+            
+            return result;
+        }
+
+        public static Image<Gray, byte> ErosionGrayscale(Image<Gray, byte> inputImage, int h, int w)
+        {
+            if (inputImage == null)
+                throw new ArgumentNullException(nameof(inputImage));
+            
+            if (h <= 0 || w <= 0)
+                throw new ArgumentException("Dimensiunile măștii trebuie să fie pozitive");
+            
+            if (h % 2 == 0 || w % 2 == 0)
+                throw new ArgumentException("Dimensiunile măștii trebuie să fie impare");
+
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Width, inputImage.Height);
+            int halfH = h / 2;
+            int halfW = w / 2;
+            
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    byte minValue = 255;
+                    
+                    for (int i = -halfH; i <= halfH; i++)
+                    {
+                        for (int j = -halfW; j <= halfW; j++)
+                        {
+                            int ny = y + i;
+                            int nx = x + j;
+                            
+                            if (ny >= 0 && ny < inputImage.Height && 
+                                nx >= 0 && nx < inputImage.Width)
+                            {
+                                byte pixelValue = inputImage.Data[ny, nx, 0];
+                                if (pixelValue < minValue)
+                                {
+                                    minValue = pixelValue;
+                                }
+                            }
+                        }
+                    }
+                    
+                    result.Data[y, x, 0] = minValue;
+                }
+            }
+            
+            return result;
+        }
+
+        public static Image<Gray, byte> MorphologicalGradient(Image<Gray, byte> inputImage, int h, int w)
+        {
+            if (inputImage == null)
+                throw new ArgumentNullException(nameof(inputImage));
+            
+            if (h <= 0 || w <= 0)
+                throw new ArgumentException("Dimensiunile măștii trebuie să fie pozitive");
+            
+            if (h % 2 == 0 || w % 2 == 0)
+                throw new ArgumentException("Dimensiunile măștii trebuie să fie impare");
+
+            Image<Gray, byte> dilated = DilationGrayscale(inputImage, h, w);
+            Image<Gray, byte> eroded = ErosionGrayscale(inputImage, h, w);
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Width, inputImage.Height);
+            
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    int diff = dilated.Data[y, x, 0] - eroded.Data[y, x, 0];
+                    result.Data[y, x, 0] = (byte)Math.Max(0, Math.Min(255, diff));
+                }
+            }
+            
+            return result;
+        }
     }
 }
