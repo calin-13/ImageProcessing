@@ -1340,6 +1340,61 @@ private void SobelDiagonal(object parameter)
             ProcessedImage = Convert(GrayProcessedImage);
         }
         #endregion
+
+         #region Morphological Gradient
+        private ICommand _morphologicalGradientCommand;
+        public ICommand MorphologicalGradientCommand
+        {
+            get
+            {
+                if (_morphologicalGradientCommand == null)
+                    _morphologicalGradientCommand = new RelayCommand(MorphologicalGradient);
+                return _morphologicalGradientCommand;
+            }
+        }
+
+        private void MorphologicalGradient(object parameter)
+        {
+            if (InitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            if (GrayInitialImage == null && ColorInitialImage != null)
+                GrayInitialImage = Tools.Convert(ColorInitialImage);
+
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("Grayscale image is not available!");
+                return;
+            }
+
+            List<string> labels = new List<string>()
+            {
+                "Height (h):",
+                "Width (w):"
+            };
+
+            DialogWindow window = new DialogWindow(_mainVM, labels);
+            window.ShowDialog();
+ 
+            List<double> values = window.GetValues();
+            int h = (int)values[0];
+            int w = (int)values[1];
+
+            if (h <= 0 || w <= 0 || h % 2 == 0 || w % 2 == 0)
+            {
+                MessageBox.Show("Height and width must be positive odd numbers!");
+                return;
+            }
+
+            GrayProcessedImage = MorphologicalOperations.MorphologicalGradient(GrayInitialImage, h, w);
+            ProcessedImage = Convert(GrayProcessedImage);
+        }
+        #endregion
         
         #endregion
 
@@ -1386,6 +1441,8 @@ private void SobelDiagonal(object parameter)
 
             ClearProcessedCanvas(canvases[1] as Canvas);
         }
+
+        
         #endregion
     }
 }
