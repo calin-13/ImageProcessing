@@ -1398,7 +1398,109 @@ private void SobelDiagonal(object parameter)
         
         #endregion
 
-        #region Geometric transformations
+         #region Geometric transformations
+        private ICommand _scaleBilinearCommand;
+        public ICommand ScaleBilinearCommand
+        {
+            get
+            {
+                if (_scaleBilinearCommand == null)
+                    _scaleBilinearCommand = new RelayCommand(ScaleBilinear);
+                return _scaleBilinearCommand;
+            }
+        }
+        
+        private ICommand _scaleBicubicCommand;
+        public ICommand ScaleBicubicCommand
+        {
+            get
+            {
+                if (_scaleBicubicCommand == null)
+                    _scaleBicubicCommand = new RelayCommand(ScaleBicubic);
+                return _scaleBicubicCommand;
+            }
+        }
+
+        private void ScaleBilinear(object parameter)
+        {
+            if (InitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+            ClearProcessedCanvas(parameter);
+            List<string> labels = new List<string>()
+            {
+                "Scale X (sx):",
+                "Scale y (sy):" 
+            };
+            
+            DialogWindow window = new DialogWindow(_mainVM, labels);
+            window.ShowDialog();
+            List<double> values = window.GetValues();
+
+            double sx = values[0];
+            double sy = values[1];
+
+            if (sx <= 0 || sy <= 0)
+            {
+                MessageBox.Show("Scale X and Y must be positive odd numbers!");
+                return;
+            }
+            
+            if (ColorInitialImage != null)
+            {
+                GrayProcessedImage = GeometricTransformations.ScaleBilinearColor(GrayInitialImage, sx, sy);
+                ProcessedImage = Convert(GrayProcessedImage);
+            }
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = GeometricTransformations.ScaleBilinear(GrayInitialImage, sx, sy);
+                ProcessedImage = Convert(GrayProcessedImage);
+            }
+        }
+        
+        private void ScaleBicubic(object parameter)
+        {
+            if (InitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+            ClearProcessedCanvas(parameter);
+    
+            List<string> labels = new List<string>()
+            {
+                "Scale X (sx):",
+                "Scale Y (sy):"
+            };
+    
+            DialogWindow window = new DialogWindow(_mainVM, labels);
+            window.ShowDialog();
+            List<double> values = window.GetValues();
+    
+            double sx = values[0];
+            double sy = values[1];
+    
+            if (sx <= 0 || sy <= 0)
+            {
+                MessageBox.Show("Scale factors must be positive!");
+                return;
+            }
+    
+            if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = GeometricTransformations.ScaleBicubicColor(ColorInitialImage, sx, sy);
+                ProcessedImage = Convert(ColorProcessedImage);
+            }
+            else if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = GeometricTransformations.ScaleBicubic(GrayInitialImage, sx, sy);
+                ProcessedImage = Convert(GrayProcessedImage);
+            }
+        }
+
         #endregion
 
         #region Segmentation
