@@ -1504,6 +1504,68 @@ private void SobelDiagonal(object parameter)
         #endregion
 
         #region Segmentation
+        private ICommand _harrisCornerDetectionCommand;
+        public ICommand HarrisCornerDetectionCommand
+        {
+            get
+            {
+                if (_harrisCornerDetectionCommand == null)
+                    _harrisCornerDetectionCommand = new RelayCommand(HarrisCornerDetection);
+                return _harrisCornerDetectionCommand;
+            }
+        }
+
+        private void HarrisCornerDetection(object parameter)
+        {
+            MessageBox.Show("Funcția a fost apelată!"); 
+            if (InitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+            List<string> labels = new List<string>()
+            {
+                "Sigma (σ):",
+                "Threshold (T):",
+                "Alpha (α) [0.04-0.06]:"
+            };
+
+            DialogWindow window = new DialogWindow(_mainVM, labels);
+            window.ShowDialog();
+            List<double> values = window.GetValues();
+            
+            double sigma = values[0];
+            double threshold = values[1];
+            double alpha = values[2];
+            
+            if (sigma <= 0)
+            {
+                MessageBox.Show("Sigma must be positive!");
+                return;
+            }
+
+            if (alpha < 0.04 || alpha > 0.06)
+            {
+                MessageBox.Show("Alpha must be between 0.04 and 0.06!");
+                return;
+            }
+            
+            
+            if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = Segmentation.HarrisCornerDetection(ColorInitialImage, sigma, threshold, alpha);
+                ProcessedImage = Convert(ColorProcessedImage);
+                
+            }
+            else if (GrayInitialImage != null)
+            {
+                ColorProcessedImage = Segmentation.HarrisCornerDetection(GrayInitialImage, sigma, threshold, alpha);
+                ProcessedImage = Convert(ColorProcessedImage);
+            }
+        }
+
         #endregion
 
         #region Use processed image as initial image
